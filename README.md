@@ -2,28 +2,29 @@
 
 ## 📌 Project Overview
 
-This project focuses on **predicting the quality of cocktail juice using Machine Learning classification algorithms**.
+This project uses Machine Learning classification techniques to predict the quality of cocktail juice based on its physicochemical properties.
 
-The dataset contains physicochemical features of cocktail juice, and the goal is to classify the juice into two quality categories:
+The original dataset contains a numerical `quality` score. The project transforms this score into two categories:
 
 * **Bad**
 * **Good**
 
-Several Machine Learning algorithms are trained and evaluated to determine which model provides the best classification performance.
+Multiple Machine Learning algorithms are trained, evaluated, and compared to identify the best-performing model.
 
 ---
 
-## 🎯 Project Objectives
+## 🎯 Objectives
 
-* Explore and understand the juice quality dataset.
-* Perform **Exploratory Data Analysis (EDA)**.
-* Check for missing values and outliers.
-* Analyze correlations between features.
+* Explore and understand the dataset.
+* Perform Exploratory Data Analysis (EDA).
+* Identify missing values and potential outliers.
+* Analyze relationships between numerical features.
 * Transform the quality score into categorical classes.
+* Encode the target variable.
 * Scale numerical features.
 * Train multiple classification models.
-* Compare model accuracy and cross-validation performance.
-* Use the trained models to predict juice quality for new inputs.
+* Compare model performance using accuracy and cross-validation.
+* Predict the quality of new juice samples.
 
 ---
 
@@ -31,36 +32,45 @@ Several Machine Learning algorithms are trained and evaluated to determine which
 
 **Dataset:** `Cocktail Juice Quality_Training Dataset.csv`
 
-The dataset contains numerical physicochemical measurements and a `quality` target variable.
+The dataset contains physicochemical measurements along with a `quality` target variable.
 
-The original quality score is converted into two classes:
+The original quality score is transformed into two classes:
 
-| Quality Score | Class |
-| ------------- | ----- |
-| 3–5           | Bad   |
-| 6–7           | Good  |
+| Quality               | Class |
+| --------------------- | ----- |
+| Lower quality scores  | Bad   |
+| Higher quality scores | Good  |
 
-> The exact class boundaries depend on the binning logic used in the notebook.
+> The exact classification boundaries are defined in the notebook using `pd.cut()`.
 
 ---
 
 ## 🔍 Exploratory Data Analysis
 
-The project performs several EDA steps:
+Several EDA techniques are applied to understand the dataset:
 
 * Dataset preview using `head()`
 * Dataset structure using `info()`
-* Statistical summary using `describe()`
+* Statistical analysis using `describe()`
 * Column inspection
 * Missing-value detection
 * Quality distribution analysis
+* Correlation analysis
 * Correlation heatmap
-* Boxplots for detecting outliers
+* Boxplots for outlier detection
 * Unique-value analysis
 
-### Outlier Detection
+### 📊 Outlier Detection
 
-The **Interquartile Range (IQR)** method is used to identify potential outliers in the pH feature.
+The **Interquartile Range (IQR)** method is used to identify potential outliers in the `pH` feature.
+
+The calculation is based on:
+
+* Q1 — 25th percentile
+* Q3 — 75th percentile
+* IQR = Q3 − Q1
+* Lower Bound = Q1 − 1.5 × IQR
+* Upper Bound = Q3 + 1.5 × IQR
 
 ---
 
@@ -68,14 +78,15 @@ The **Interquartile Range (IQR)** method is used to identify potential outliers 
 
 The following preprocessing steps are performed:
 
-1. Load the CSV dataset using Pandas.
-2. Check for missing values.
-3. Analyze outliers.
-4. Convert the numerical `quality` score into categorical labels.
-5. Encode the categorical labels using `LabelEncoder`.
-6. Separate features (`X`) and target (`y`).
-7. Split the dataset into training and testing sets.
-8. Apply `StandardScaler` to normalize the feature values.
+1. Load the dataset using Pandas.
+2. Inspect the dataset structure.
+3. Check for missing values.
+4. Analyze potential outliers.
+5. Convert numerical quality scores into categorical labels.
+6. Encode the target variable using `LabelEncoder`.
+7. Separate features (`X`) and target (`y`).
+8. Split the dataset into training and testing sets.
+9. Standardize the numerical features using `StandardScaler`.
 
 ### Train/Test Split
 
@@ -92,15 +103,15 @@ train_test_split(
 
 ## 🤖 Machine Learning Models
 
-The project compares several classification algorithms:
+The project compares the following classification algorithms:
 
-1. **Logistic Regression**
-2. **Random Forest Classifier**
-3. **Support Vector Classifier (SVC)**
-4. **K-Nearest Neighbors (KNN)**
-5. **Decision Tree Classifier**
-6. **Gaussian Naive Bayes**
-7. **XGBoost Classifier**
+* Logistic Regression
+* Random Forest Classifier
+* Support Vector Classifier (SVC)
+* K-Nearest Neighbors (KNN)
+* Decision Tree Classifier
+* Gaussian Naive Bayes
+* XGBoost Classifier
 
 ---
 
@@ -113,35 +124,39 @@ Each model is evaluated using:
 * Classification Report
 * 10-Fold Cross-Validation
 
-The models are then compared using a summary DataFrame containing:
+The results are collected into a comparison table containing:
 
-```text
-Algorithm
-Accuracy Score (%)
-Cross Validation Score (%)
-```
+| Metric                 | Description                         |
+| ---------------------- | ----------------------------------- |
+| Accuracy Score         | Performance on the test dataset     |
+| Cross-Validation Score | Average performance across 10 folds |
 
-An accuracy comparison chart is also created to visualize the performance of the different algorithms.
+The project also generates visual comparisons of the model accuracy scores.
 
 ---
 
 ## 🔄 Cross-Validation
 
-The project uses **10-fold cross-validation** to obtain a more reliable estimate of model performance.
+To obtain a more reliable estimate of model performance, **10-fold cross-validation** is applied.
 
 ```python
-cross_val_score(model, X_train, y_train, cv=10)
+cross_val_score(
+    model,
+    X_train,
+    y_train,
+    cv=10
+)
 ```
 
-This allows the performance of each model to be evaluated across multiple training/validation splits.
+The mean cross-validation score is then calculated for each algorithm.
 
 ---
 
 ## 🔮 Prediction
 
-After training, the models can be used to predict the quality of new juice samples.
+After training the models, new juice samples can be passed to the trained classifier to predict their quality.
 
-Example input:
+Example:
 
 ```python
 features = np.array([
@@ -149,6 +164,8 @@ features = np.array([
 ])
 
 prediction = model.predict(features)
+
+print("Prediction:", prediction)
 ```
 
 The model returns the predicted quality class.
@@ -175,17 +192,10 @@ The model returns the predicted quality class.
 
 * Scikit-learn
 * XGBoost
+
+### Statistical Analysis
+
 * Statsmodels
-
-### Algorithms
-
-* Logistic Regression
-* Random Forest
-* SVM
-* KNN
-* Decision Tree
-* Gaussian Naive Bayes
-* XGBoost
 
 ---
 
@@ -195,7 +205,6 @@ The model returns the predicted quality class.
 Cocktail-Juice-Quality-Classification-ML/
 │
 ├── README.md
-│
 ├── Cocktail Juice Quality_Training Dataset.csv
 │
 └── Cocktail_Juice_Quality_Classification.ipynb
@@ -205,41 +214,18 @@ Cocktail-Juice-Quality-Classification-ML/
 
 ## 📈 Results
 
-The project compares the performance of all implemented Machine Learning models and identifies the strongest-performing model based on **test accuracy and cross-validation score**.
+The project evaluates and compares seven Machine Learning classification algorithms.
 
-The final model can then be used to classify new cocktail juice samples as **Good** or **Bad**.
+The final model can be selected based on its:
 
----
+* Test Accuracy
+* Cross-Validation Score
+* Classification Report
+* Confusion Matrix
 
-## 🚀 How to Run the Project
+This comparison helps determine which algorithm performs best for predicting cocktail juice quality.
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/Cocktail-Juice-Quality-Classification-ML.git
-```
-
-### 2. Install the required libraries
-
-```bash
-pip install numpy pandas seaborn matplotlib scikit-learn statsmodels xgboost
-```
-
-### 3. Open the Jupyter Notebook
-
-```bash
-jupyter notebook
-```
-
-### 4. Run the notebook
-
-Open:
-
-```text
-Cocktail_Juice_Quality_Classification.ipynb
-```
-
-and run the cells sequentially.
+> Model performance values are generated directly from the notebook and may vary depending on the dataset and model configuration.
 
 ---
 
@@ -248,14 +234,47 @@ and run the cells sequentially.
 * Data Cleaning
 * Exploratory Data Analysis
 * Outlier Detection
+* Data Preprocessing
 * Feature Scaling
 * Label Encoding
-* Classification
+* Machine Learning Classification
 * Model Comparison
 * Cross-Validation
-* Performance Evaluation
-* Machine Learning Prediction
+* Model Evaluation
 * Data Visualization
+* Predictive Modeling
+
+---
+
+## 🚀 How to Run the Project
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/Cocktail-Juice-Quality-Classification-ML.git
+```
+
+### 2. Install Dependencies
+
+```bash
+pip install numpy pandas seaborn matplotlib scikit-learn statsmodels xgboost
+```
+
+### 3. Launch Jupyter Notebook
+
+```bash
+jupyter notebook
+```
+
+### 4. Open the Notebook
+
+Open:
+
+```text
+Cocktail_Juice_Quality_Classification.ipynb
+```
+
+Run the notebook cells sequentially.
 
 ---
 
@@ -263,6 +282,8 @@ and run the cells sequentially.
 
 **Machine Learning | Classification | Data Analysis | Python**
 
-### ⭐ Project Title
+---
+
+## ⭐ Project Title
 
 **Cocktail Juice Quality Classification Using Machine Learning**
