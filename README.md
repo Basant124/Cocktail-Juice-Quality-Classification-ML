@@ -1,4 +1,3 @@
-# Cocktail-Juice-Quality-Classification-ML
 # 🍹 Cocktail Juice Quality Classification Using Machine Learning
 
 ## 📌 Project Overview
